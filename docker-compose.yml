@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  simulator:
+    build: .
+    command: python3 simulator/simulator.py
+    depends_on:
+      - kafka
+    network_mode: host
+    restart: unless-stopped
+
+  detector:
+    build: .
+    command: python3 ml/detector.py
+    depends_on:
+      - kafka
+      - redis
+    network_mode: host
+    restart: unless-stopped
+
+  api:
+    build: .
+    command: python3 -m uvicorn api.main:app --host 0.0.0.0 --port 8000
+    depends_on:
+      - redis
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}

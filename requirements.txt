@@ -1,0 +1,9 @@
+kafka-python
+redis
+scikit-learn
+numpy
+fastapi
+uvicorn
+anthropic
+shap
+pandas
