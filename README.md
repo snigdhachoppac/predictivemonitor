@@ -35,3 +35,7 @@ Open http://localhost:3000
 ## How the ML works
 
 Isolation Forest detects anomalies by isolating observations through random splits. SHAP values explain which metrics contributed most to each prediction — making alerts actionable for on-call engineers.
+
+## Demo
+
+![Demo](demo.gif)
