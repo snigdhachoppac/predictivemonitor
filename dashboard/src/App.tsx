@@ -5,7 +5,7 @@ import axios from 'axios';
 const API = 'http://localhost:8000';
 
 function generateMockMetric(t: number, failureMode: boolean) {
-  const noise = () => (Math.random() - 0.5) * 10;
+  
   const base = {
     timestamp: new Date().toISOString(),
     risk_score: failureMode ? Math.min(95, 60 + Math.random() * 30) : Math.max(5, 20 + Math.random() * 25),
